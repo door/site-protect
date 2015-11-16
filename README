@@ -1,9 +1,13 @@
-aptitude install ruby2.0
+aptitude install ruby2.0 ruby-sinatra ruby-sinatra-contrib
 
 $ cp site-protect.conf.rb.sample site-protect.conf.rb
 
-edit site-protect.conf.rb
+edit site-protect.conf.rb;
 
-$ ./get-streams.rb > streams.json
+Add "auth http://localhost:1555" info flussonic.conf;
 
+# Run site:
 $ ./site-protect.rb -p 8888
+
+Run auth backend:
+$ ./site-protect-auth.rb -p 1555
