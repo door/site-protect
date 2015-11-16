@@ -1,0 +1,6 @@
+FLUSSONIC_URL = "http://flussonic.my.tld"
+
+FLUSSONIC_USER = "flussonic"
+FLUSSONIC_PASS = "letusin?"
+
+SECRET = "javcornOrarticDuFojEd58GoigPogeg6"
