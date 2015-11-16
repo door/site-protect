@@ -7,7 +7,7 @@ edit site-protect.conf.rb;
 Add "auth http://localhost:1555" info flussonic.conf;
 
 # Run site:
-$ ./site-protect.rb -p 8888
+$ ./site-protect.rb -p 8888 -o 0.0.0.0
 
 Run auth backend:
 $ ./site-protect-auth.rb -p 1555
