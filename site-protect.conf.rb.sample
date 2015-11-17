@@ -4,3 +4,5 @@ FLUSSONIC_USER = "flussonic"
 FLUSSONIC_PASS = "letusin?"
 
 SECRET = "javcornOrarticDuFojEd58GoigPogeg6"
+
+TIMESPAN = 3600
