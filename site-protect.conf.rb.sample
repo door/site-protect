@@ -1,4 +1,4 @@
-FLUSSONIC_URL = "http://flussonic.my.tld"
+FLUSSONIC_URL = "http://flussonic.my.tld:8080"
 
 FLUSSONIC_USER = "flussonic"
 FLUSSONIC_PASS = "letusin?"

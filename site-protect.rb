@@ -23,7 +23,7 @@ get '/:stream' do
   hashs = [salt, SECRET, params["stream"], request.ip, time.to_s, TIMESPAN]
   hash = Digest::SHA1.hexdigest(hashs . join)
   token = {salt: salt, hash: hash, time: time, timespan: TIMESPAN} . map {|k,v| "#{k}=#{v}"} . join('.')
-  @embed = "#{FLUSSONIC_URL}:8080/#{params["stream"]}/embed.html?dvr=false&token=#{token}"
+  @embed = "#{FLUSSONIC_URL}/#{params["stream"]}/embed.html?dvr=false&token=#{token}"
   erb :player
 end
 
