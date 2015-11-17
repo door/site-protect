@@ -8,7 +8,8 @@ require_relative './site-protect.conf'
 
 
 get '/' do
-  ts = params["token"] . split('.')
+  token = params["token"] || ""
+  ts = token . split('.')
   tparams = {}
   ts . each do |s|
     s =~ /^([a-z]+)=(.+)$/ or next
