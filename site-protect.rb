@@ -5,6 +5,8 @@ require 'sinatra'
 require 'sinatra/reloader'
 require 'json'
 require 'digest/sha1'
+require 'securerandom'
+
 
 require_relative './site-protect.conf'
 
@@ -17,9 +19,10 @@ end
 
 get '/:stream' do
   time = Time.now.to_i
-  hashs = [SECRET, params["stream"], request.ip, time.to_s, TIMESPAN]
-  hash = Digest::SHA1.hexdigest hashs . join
-  token = [hash, "time=#{time}", "timespan=#{TIMESPAN}"] . join('.')
+  salt = SecureRandom.hex(10)
+  hashs = [salt, SECRET, params["stream"], request.ip, time.to_s, TIMESPAN]
+  hash = Digest::SHA1.hexdigest(hashs . join)
+  token = {salt: salt, hash: hash, time: time, timespan: TIMESPAN} . map {|k,v| "#{k}=#{v}"} . join('.')
   @embed = "#{FLUSSONIC_URL}:8080/#{params["stream"]}/embed.html?dvr=false&token=#{token}"
   erb :player
 end
@@ -35,6 +38,7 @@ def get_streams
     next unless entry["entry"] == "stream"
     stream = entry["value"]["name"]
     name = stream
+    # take stream name from "meta name" option
     meta = entry["value"]["options"]["meta"] || []
     meta . each do |k,v|
       if k == "name"
