@@ -5,31 +5,22 @@ local SECRET = "xxx topsecret xxx"
 local TOKEN_GENERATOR_PASSWORD = "change me!";
 
 
-local check_pass = function(authenticator)
-   if not authenticator then
-      return false
-   end
-
-   local salt, hash = string.match(authenticator, "^([a-z0-9]+)%.([a-z0-9]+)$")
-   if not (salt and hash) then
-      return false
-   end
-
-   return hash == crypto.sha256(salt .. TOKEN_GENERATOR_PASSWORD)
-end
-
-
-http = {}
 
 http.mktoken = function(req)
+   local authenticator_string = req.query.salt .. req.query.stream .. req.query.ip .. req.query.time .. TOKEN_GENERATOR_PASSWORD
+   if req.query.authenticator ~= crypto.sha256(authenticator_string) then
+      flussonic.log("Wrong hash")
+      return "http", 403, {}, "Unauthorized"
+   end
 
-   if not check_pass(req.query.authenticator) then
-      flussonic.log("Unauthorized")
+   local time = flussonic.now()
+
+   if math.abs(time - tonumber(req.query.time)) > 300 then
+      flussonic.log("Wrong time")
       return "http", 403, {}, "Unauthorized"
    end
 
    local salt = string.gsub(flussonic.uuid(), "-", "")
-   local time = flussonic.now()
    local hashs = {salt, SECRET, req.query.stream, req.query.ip, time, req.query.timespan}
    local hash = crypto.sha256(table.concat(hashs, ""))
    local token =
@@ -37,5 +28,5 @@ http.mktoken = function(req)
       ".hash:"     .. hash ..
       ".time:"     .. time ..
       ".timespan:" .. req.query.timespan
-   return "http", 200, {}, tostring(token) .. "\n"
+   return "http", 200, {}, token .. "\n"
 end
