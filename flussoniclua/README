@@ -2,14 +2,16 @@
 $ cp siteauth.lua web.lua /etc/flussonic
 
 # Edit both of them and set SECRET;
+# set TOKEN_GENERATOR_PASSWORD in web.lua
 
 # Add "web_script auth_helpers /etc/flussonic;" and "auth /etc/flussonic/siteauth.lua;" into flussonic.conf;
 
 # Install php:
 $ apt-get install php5-cli
 
+# Copy conf.php.sample into conf.php
 # Edit conf.php and set Flussonic url a login/password to access Flussonic API.
-# Note that you can avoid using of API and create static list of channels in site.php.
+# set $TOKEN_GENERATOR_PASSWORD as in web.lua
 # PHP have not to run on the same host with Flussonic.
 
 # Run site:

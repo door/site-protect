@@ -9,7 +9,7 @@ local tparams = {}
 
 -- there is no gmatch in luerl :-(
 for _,k in pairs({"salt", "hash", "time", "timespan"}) do
-   local v = string.match(req.token, k..":([a-z0-9]+)")
+   local v = string.match(req.token, k .. ":([a-z0-9]+)")
    if not v then
       return false, {}
    end
@@ -17,7 +17,7 @@ for _,k in pairs({"salt", "hash", "time", "timespan"}) do
 end
 
 local hashs = {tparams.salt, SECRET, req.name, req.ip, tparams.time, tparams.timespan}
-local hash = crypto.sha1(table.concat(hashs, ""))
+local hash = crypto.sha256(table.concat(hashs, ""))
 
 if hash ~= tparams.hash then
    return false, {["code"] = 403, ["message"] = "Invalid hash"}

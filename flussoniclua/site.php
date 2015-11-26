@@ -1,5 +1,7 @@
 <?php
 
+// TODO: retrieve stream list via lua web script with flussonic.streams() function
+
 include_once("conf.php");
 
 
@@ -20,8 +22,15 @@ if($_SERVER["REQUEST_URI"] == "/") {
     $context = stream_context_create($opts);
     global $FLUSSONIC_URL, $TIMESPAN;
     $ip = $_SERVER["REMOTE_ADDR"];
-    $url = "$FLUSSONIC_URL/auth_helpers/mktoken?stream=$stream&ip=$ip&timespan=$TIMESPAN";
+
+    $authetnicator_salt = bin2hex(openssl_random_pseudo_bytes(16));
+    $authetnicator = $authetnicator_salt . "." . hash("sha256", $authetnicator_salt . $TOKEN_GENERATOR_PASSWORD);
+    $url = "$FLUSSONIC_URL/auth_helpers/mktoken?stream=$stream&ip=$ip&timespan=$TIMESPAN&authenticator=$authetnicator";
     $token = file_get_contents($url, false, $context);
+    if (!$token) {
+        exit(500);
+    }
+
     $embed = "$FLUSSONIC_URL/$stream/embed.html?dvr=false&token=$token";
 
     echo $name;
@@ -63,5 +72,6 @@ function get_json($url, $user, $pass)
     $json = file_get_contents($url, false, $context);
     return json_decode($json, true);
 }
+
 
 ?>
